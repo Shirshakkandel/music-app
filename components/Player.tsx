@@ -144,7 +144,7 @@ export default function Player({
       </TimeControl__W50FlexYcenter3>
 
       {/* Bottom */}
-      <PlayControl__W40FlexXbetweenYcenter className="w-[80%] md:w-[40%] flex justify-between items-center p-4  md:pl-2">
+      <PlayControl__W40FlexXbetweenYcenter className="w-[85%] md:w-[45%] flex justify-evenly items-center p-4  md:pl-2">
         <FontAwesomeIcon
           size="2x"
           className="skip-back"
@@ -172,7 +172,7 @@ export default function Player({
             min="0"
             step="0.1"
             type="range"
-            className="w-1/5 md:w-1/4"
+            className="w-1/4 md:w-1/5"
           />
         )}
       </PlayControl__W40FlexXbetweenYcenter>
