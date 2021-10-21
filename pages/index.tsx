@@ -19,8 +19,8 @@ export default function Home() {
   const [songInfo, setSongInfo] = useState({
     currentTime: 0,
     duration: 0,
-    // animationPercentage: 0,
-    // volume: 0,
+    animationPercentage: 0,
+    volume: 0,
   })
 
   function timeUpdateHandler(e) {
@@ -28,7 +28,35 @@ export default function Home() {
     // console.log(`${currentTime} ${duration}`)
     const roundedCurrent = Math.round(currentTime)
     const roundedDuration = Math.round(duration)
-    setSongInfo({ ...songInfo, currentTime: currentTime, duration: duration })
+    const animationPercentage = Math.round((roundedCurrent / roundedDuration) * 100)
+    console.log(animationPercentage)
+
+    setSongInfo({
+      ...songInfo,
+      currentTime: currentTime,
+      duration: duration,
+      animationPercentage,
+      volume: e.target.volume,
+    })
+  }
+
+  async function songEndHandler() {
+    let currentIndex = songs.findIndex((song) => song.id === currentSong.id)
+    await setCurrentSong(songs[(currentIndex + 1) % songs.length])
+    activeLibraryHandler(songs[(currentIndex + 1) % songs.length])
+    if (isPlaying) audioRef.current.play()
+  }
+
+  //useEffect Update List
+  function activeLibraryHandler(nextPrev) {
+    const newSongs = songs.map((song) => {
+      if (song.id === nextPrev.id) {
+        return { ...song, active: true }
+      } else {
+        return { ...song, active: false }
+      }
+    })
+    setSongs(newSongs)
   }
 
   return (
@@ -66,7 +94,7 @@ export default function Home() {
           onTimeUpdate={timeUpdateHandler}
           src={currentSong.audio}
           ref={audioRef}
-          // onEnded={songEndHandler}
+          onEnded={songEndHandler}
         ></audio>
       </AppMl30>
     </>

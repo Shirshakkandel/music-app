@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -8,12 +8,29 @@ import {
   faPause,
   faVolumeDown,
 } from '@fortawesome/free-solid-svg-icons'
-import { playAudio } from '../util'
+// import { playAudio } from '../util'
 
 const FlexCol10vhXcenterYbetween = styled.div``
 
 //Top
-const TimeControl__W50FlexYcenter3 = styled.div``
+const TimeControl__W50FlexYcenter3 = styled.div`
+  input {
+    --webkit-appearance: none;
+  }
+  input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 16px;
+    width: 16px;
+    /* background: black; */
+  }
+
+  input[type='range']::-moz-range-thumb {
+    -webkit-appearance: none;
+    background: transparent;
+    border: none;
+    /* background: black; */
+  }
+`
 const Track__RelativeHidden = styled.div``
 const AbsoluteAnimateTrack = styled.div``
 
@@ -35,6 +52,7 @@ export default function Player({
   setCurrentSong,
   setSongs,
 }) {
+  const [activeVolume, setActiveVolume] = useState(false)
   //useEffect Update List
   function activeLibraryHandler(nextPrev) {
     const newSongs = songs.map((song) => {
@@ -45,6 +63,12 @@ export default function Player({
       }
     })
     setSongs(newSongs)
+  }
+
+  const changeVolume = (e) => {
+    let value = e.target.value
+    audioRef.current.volume = value
+    setSongInfo({ ...songInfo, volume: value })
   }
 
   function getTime(time) {
@@ -92,33 +116,35 @@ export default function Player({
   return (
     <FlexCol10vhXcenterYbetween className="min-h-[10vh] flex flex-col justify-between items-center">
       {/* Top */}
-      <TimeControl__W50FlexYcenter3 className="flex items-center w-1/2 p-4 space-x-1">
+      <TimeControl__W50FlexYcenter3 className="flex items-center w-[90%] p-4 space-x-1 md:w-1/2">
         <p>{getTime(songInfo.currentTime)}</p>
 
-        <div
-          style={
-            {
-              // background: `linear-gradient(to right,${currentSong.color[0]},${currentSong.color[1]})`,
-            }
-          }
-          className="relative w-full h-4 rounded-md"
+        <Track__RelativeHidden
+          style={{
+            background: `linear-gradient(to right,${currentSong.color[0]},${currentSong.color[1]})`,
+          }}
+          className="relative w-full h-4 overflow-hidden rounded-md"
         >
           <input
             type="range"
             min={0}
             max={songInfo.duration || 0}
             value={songInfo.currentTime}
-            className="w-full"
+            className="w-full bg-transparent appearance-none cursor-pointer"
             onChange={dragHandler}
           />
-          <div></div>
-        </div>
+
+          <AbsoluteAnimateTrack
+            style={{ transform: `translateX(${songInfo.animationPercentage}%)` }}
+            className="absolute top-0 left-0 w-full h-full pointer-events-none bg-[rgb(204,204,204)]"
+          ></AbsoluteAnimateTrack>
+        </Track__RelativeHidden>
 
         <p>{songInfo.duration ? getTime(songInfo.duration) : '0:00'}</p>
       </TimeControl__W50FlexYcenter3>
 
       {/* Bottom */}
-      <PlayControl__W40FlexXbetweenYcenter className="w-[40%] flex justify-between items-center p-4">
+      <PlayControl__W40FlexXbetweenYcenter className="w-[80%] md:w-[40%] flex justify-between items-center p-4  md:pl-2">
         <FontAwesomeIcon
           size="2x"
           className="skip-back"
@@ -132,6 +158,23 @@ export default function Player({
           icon={faAngleRight}
           onClick={() => skipTrackHandler('skip-forward')}
         />
+        <FontAwesomeIcon
+          size="2x"
+          onClick={() => setActiveVolume(!activeVolume)}
+          icon={faVolumeDown}
+        />
+
+        {activeVolume && (
+          <input
+            onChange={changeVolume}
+            value={songInfo.volume}
+            max="1"
+            min="0"
+            step="0.1"
+            type="range"
+            className="w-1/5 md:w-1/4"
+          />
+        )}
       </PlayControl__W40FlexXbetweenYcenter>
     </FlexCol10vhXcenterYbetween>
   )
