@@ -7,11 +7,10 @@ import Player from '../components/Player'
 import Song from '../components/Song'
 import chillHop from '../data'
 
-const AppMl30 = styled.div``
+const AppActiveMl30 = styled.div``
 
 export default function Home() {
   const audioRef = useRef(null)
-
   const [libraryStatus, setLibraryStatus] = useState(false)
   const [songs, setSongs] = useState(chillHop())
   const [currentSong, setCurrentSong] = useState(songs[0])
@@ -29,7 +28,7 @@ export default function Home() {
     const roundedCurrent = Math.round(currentTime)
     const roundedDuration = Math.round(duration)
     const animationPercentage = Math.round((roundedCurrent / roundedDuration) * 100)
-    console.log(animationPercentage)
+    // console.log(animationPercentage)
 
     setSongInfo({
       ...songInfo,
@@ -65,7 +64,9 @@ export default function Home() {
         <title>Music App</title>
       </Head>
 
-      <AppMl30 className={`transition ease-in duration-300 ${libraryStatus ? 'ml-[30%]' : ''} `}>
+      <AppActiveMl30
+        className={`transition ease-in duration-300 ${libraryStatus ? 'ml-[30%]' : ''} `}
+      >
         <Nav libraryStatus={libraryStatus} setLibraryStatus={setLibraryStatus} />
         <Song currentSong={currentSong} isPlaying={isPlaying} />
 
@@ -80,6 +81,7 @@ export default function Home() {
           songs={songs}
           setSongs={setSongs}
         />
+
         <Library
           songs={songs}
           setCurrentSong={setCurrentSong}
@@ -96,7 +98,7 @@ export default function Home() {
           ref={audioRef}
           onEnded={songEndHandler}
         ></audio>
-      </AppMl30>
+      </AppActiveMl30>
     </>
   )
 }

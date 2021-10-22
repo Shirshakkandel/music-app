@@ -13,7 +13,7 @@ import {
 const FlexCol10vhXcenterYbetween = styled.div``
 
 //Top
-const TimeControl__W50FlexYcenter3 = styled.div`
+const TimeControl__W90W50FlexYcenter3 = styled.div`
   input {
     --webkit-appearance: none;
   }
@@ -31,8 +31,8 @@ const TimeControl__W50FlexYcenter3 = styled.div`
     /* background: black; */
   }
 `
-const Track__RelativeHidden = styled.div``
-const AbsoluteAnimateTrack = styled.div``
+const Track__RelativeOverflowhiddenGradientRight = styled.div``
+const AnimateTrack__AbsoluteTranslateXPercentage = styled.div``
 
 //buttom
 const PlayControl__W40FlexXbetweenYcenter = styled.div`
@@ -72,8 +72,16 @@ export default function Player({
   }
 
   function getTime(time) {
+    //1:43
+    // console.log(Math.floor(time % 60))
     return Math.floor(time / 60) + ':' + ('0' + Math.floor(time % 60)).slice(-2)
   }
+
+  // function convert(value) {
+  //   return (
+  //     Math.floor(value / 60) + ':' + (value % 60 ? ('0' + Math.floor(value % 60)).slice(-2) : '00')
+  //   )
+  // }
 
   const playSongHandler = () => {
     // console.log(audioRef.current)
@@ -116,10 +124,10 @@ export default function Player({
   return (
     <FlexCol10vhXcenterYbetween className="min-h-[10vh] flex flex-col justify-between items-center">
       {/* Top */}
-      <TimeControl__W50FlexYcenter3 className="flex items-center w-[90%] p-4 space-x-1 md:w-1/2">
+      <TimeControl__W90W50FlexYcenter3 className="flex items-center w-[90%] p-4 space-x-1 md:w-1/2">
         <p>{getTime(songInfo.currentTime)}</p>
 
-        <Track__RelativeHidden
+        <Track__RelativeOverflowhiddenGradientRight
           style={{
             background: `linear-gradient(to right,${currentSong.color[0]},${currentSong.color[1]})`,
           }}
@@ -134,14 +142,14 @@ export default function Player({
             onChange={dragHandler}
           />
 
-          <AbsoluteAnimateTrack
+          <AnimateTrack__AbsoluteTranslateXPercentage
             style={{ transform: `translateX(${songInfo.animationPercentage}%)` }}
             className="absolute top-0 left-0 w-full h-full pointer-events-none bg-[rgb(204,204,204)]"
-          ></AbsoluteAnimateTrack>
-        </Track__RelativeHidden>
+          ></AnimateTrack__AbsoluteTranslateXPercentage>
+        </Track__RelativeOverflowhiddenGradientRight>
 
         <p>{songInfo.duration ? getTime(songInfo.duration) : '0:00'}</p>
-      </TimeControl__W50FlexYcenter3>
+      </TimeControl__W90W50FlexYcenter3>
 
       {/* Bottom */}
       <PlayControl__W40FlexXbetweenYcenter className="w-[85%] md:w-[45%] flex justify-evenly items-center p-4  md:pl-2">
